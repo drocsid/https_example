@@ -4,8 +4,9 @@ import io.circe.generic.auto._
 import org.http4s.circe.jsonOf
 import cats.effect.Sync
 import cats.implicits._
+import io.circe.Decoder
 import org.http4s.implicits._
-import org.http4s.{EntityDecoder, EntityEncoder, Method, Uri, Request}
+import org.http4s.{EntityDecoder, EntityEncoder, Method, Request, Uri}
 import org.http4s.client.Client
 import org.http4s.client.dsl.Http4sClientDsl
 import org.http4s.Method._
@@ -110,6 +111,22 @@ import org.http4s.Method._
 
     implicit def weatherEntityDecoder[F[_] : Sync]: EntityDecoder[F, Weather] = jsonOf
 
+    implicit val decodeEvent: Decoder[Weather] =
+      List[Decoder[Weather]](
+        Decoder[Points].widen,
+        Decoder[Context].widen,
+        Decoder[Geometry].widen,
+        Decoder[Bearing].widen,
+        Decoder[Value].widen,
+        Decoder[Geometry1].widen,
+        Decoder[Properties].widen,
+        Decoder[RelativeLocation].widen,
+        Decoder[Geometry2].widen,
+        Decoder[Properties1].widen,
+        Decoder[Distance].widen,
+        Decoder[Bearing1].widen
+      ).reduceLeft(_ or _)
+
     final case class WeatherError(e: Throwable) extends RuntimeException
 
     def impl[F[_] : Sync](C: Client[F]): F[Weather] = {
@@ -118,8 +135,6 @@ import org.http4s.Method._
       import dsl._
       C.expect[Weather](GET(uri"https://api.weather.gov/points/39.7456,-97.0892"))
         .adaptError { case t => WeatherError(t) } // Prevent Client Json Decoding Failure Leaking
-
-
     }
   }
 
