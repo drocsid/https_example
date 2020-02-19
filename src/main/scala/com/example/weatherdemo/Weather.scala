@@ -134,9 +134,9 @@ import org.http4s.Method._
       val dsl = new Http4sClientDsl[F] {}
 
       import dsl._
-        C.expect[Weather](GET(uri"https://api.weather.gov/points/39.7456,-97.0892"))
-          .adaptError { case t => WeatherError(t) } // Prevent Client Json Decoding Failure Leaking
-
+      C.expect[Weather](GET(uri"https://api.weather.gov/points/39.7456,-97.0892"))
+        .adaptError { case t => WeatherError(t) } // Prevent Client Json Decoding Failure Leaking
+    }
   }
 
 
