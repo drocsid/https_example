@@ -1,8 +1,6 @@
 package com.example.weatherdemo
 
 import io.circe.parser.decode
-import Weather.GenericDerivation._
-import Weather.Shape2
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
