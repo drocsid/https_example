@@ -26,4 +26,4 @@ object GenericDerivation {
       Decoder[Bearing1].widen
     ).reduceLeft(_ or _)
 }
-}
+

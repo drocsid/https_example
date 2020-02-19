@@ -102,8 +102,7 @@ class WeatherTest extends AnyFlatSpec with Matchers {
         "radarStation": "KTWX"
     }
 }"""
-    implicit val decoded = decode[Shape2](modelSchema)
-
+    implicit val decoded = decode[Weather](modelSchema)
     println(decoded)
     decoded.isRight shouldBe (true)
   }

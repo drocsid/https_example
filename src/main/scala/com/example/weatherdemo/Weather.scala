@@ -1,13 +1,15 @@
 package com.example.weatherdemo
 
-import cats.effect.Sync
-import cats.syntax.functor._
-import io.circe.Decoder
 import io.circe.generic.auto._
-import org.http4s.EntityDecoder
 import org.http4s.circe.jsonOf
+import cats.effect.Sync
+import cats.implicits._
+import org.http4s.implicits._
+import org.http4s.{EntityDecoder, EntityEncoder, Method, Uri, Request}
 import org.http4s.client.Client
 import org.http4s.client.dsl.Http4sClientDsl
+import org.http4s.Method._
+
 
   sealed trait Weather
 
@@ -104,22 +106,20 @@ import org.http4s.client.dsl.Http4sClientDsl
                      ) extends Weather
 
   object Weather {
-    def apply[F[_]](implicit ev: Weather[F]): Weather[F] = ev
+    //def apply[F[_]](implicit ev: Weather[F]): Weather[F] = ev
 
     implicit def weatherEntityDecoder[F[_] : Sync]: EntityDecoder[F, Weather] = jsonOf
 
     final case class WeatherError(e: Throwable) extends RuntimeException
 
-    def impl[F[_] : Sync](C: Client[F]): Weather[F] = new Weather[F] {
+    def impl[F[_] : Sync](C: Client[F]): F[Weather] = {
       val dsl = new Http4sClientDsl[F] {}
 
       import dsl._
+      C.expect[Weather](GET(uri"https://api.weather.gov/points/39.7456,-97.0892"))
+        .adaptError { case t => WeatherError(t) } // Prevent Client Json Decoding Failure Leaking
 
-      def get: F[Weather] = {
-        C.expect[Weather](GET(uri"https://api.weather.gov/points/39.7456,-97.0892"))
-          .adaptError { case t => WeatherError(t) } // Prevent Client Json Decoding Failure Leaking
 
-      }
     }
   }
 
