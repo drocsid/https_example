@@ -127,14 +127,18 @@ import org.http4s.Method._
         Decoder[Bearing1].widen
       ).reduceLeft(_ or _)
 
+
     final case class WeatherError(e: Throwable) extends RuntimeException
 
     def impl[F[_] : Sync](C: Client[F]): F[Weather] = {
       val dsl = new Http4sClientDsl[F] {}
 
       import dsl._
-      C.expect[Weather](GET(uri"https://api.weather.gov/points/39.7456,-97.0892"))
-        .adaptError { case t => WeatherError(t) } // Prevent Client Json Decoding Failure Leaking
+      def get = {
+        C.expect[Weather](GET(uri"https://api.weather.gov/points/39.7456,-97.0892"))
+          .adaptError { case t => WeatherError(t) } // Prevent Client Json Decoding Failure Leaking
+      }
+
     }
   }
 

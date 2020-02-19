@@ -7,6 +7,18 @@ import org.http4s.dsl.Http4sDsl
 
 object WeatherdemoRoutes {
 
+  /*def weatherRoutes[F[_]: Sync](W: Weather)] = {
+    val dsl = new Http4sDsl[F]{}
+    import dsl._
+    HttpRoutes.of[F] {
+      case GET -> Root / "weather" =>
+        for {
+          weather <- Weather.get
+          resp <- Ok(weather)
+        } yield resp
+    }
+  }*/
+
   def jokeRoutes[F[_]: Sync](J: Jokes[F]): HttpRoutes[F] = {
     val dsl = new Http4sDsl[F]{}
     import dsl._
