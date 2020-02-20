@@ -23,7 +23,8 @@ object WeatherdemoServer {
       // in the underlying routes.
       httpApp = (
         WeatherdemoRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
-        WeatherdemoRoutes.jokeRoutes[F](jokeAlg)
+        WeatherdemoRoutes.jokeRoutes[F](jokeAlg) <+>
+        WeatherdemoRoutes.weatherRoutes[F](client)
       ).orNotFound
 
       // With Middlewares in place

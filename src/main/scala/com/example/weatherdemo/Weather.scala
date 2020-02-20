@@ -1,10 +1,12 @@
 package com.example.weatherdemo
 
+import cats.Applicative
 import io.circe.generic.auto._
-import org.http4s.circe.jsonOf
+import org.http4s.circe.{jsonEncoderOf, jsonOf}
 import cats.effect.Sync
 import cats.implicits._
-import io.circe.Decoder
+import io.circe.{Decoder, Encoder}
+import io.circe.generic.semiauto.deriveEncoder
 import org.http4s.implicits._
 import org.http4s.{EntityDecoder, EntityEncoder, Method, Request, Uri}
 import org.http4s.client.Client
@@ -126,6 +128,11 @@ import org.http4s.Method._
       ).reduceLeft(_ or _)
 
     implicit def weatherEntityDecoder[F[_] : Sync]: EntityDecoder[F, Weather] = jsonOf
+
+    implicit val weatherEncoder: Encoder[Weather] = deriveEncoder[Weather]
+
+    implicit def weatherEntityEncoder[F[_]: Applicative]: EntityEncoder[F, Weather] =
+      jsonEncoderOf
 
     final case class WeatherError(e: Throwable) extends RuntimeException
 
