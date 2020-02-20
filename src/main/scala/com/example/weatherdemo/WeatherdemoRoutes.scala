@@ -1,19 +1,21 @@
 package com.example.weatherdemo
 
+import io.circe.generic.auto._
 import cats.effect.Sync
 import cats.implicits._
 import org.http4s.HttpRoutes
+import org.http4s.client.Client
 import org.http4s.dsl.Http4sDsl
 
 object WeatherdemoRoutes {
 
-  def weatherRoutes[F[_]: Sync](W: F[Weather]) = {
+  def weatherRoutes[F[_]: Sync](C: Client[F]) = {
     val dsl = new Http4sDsl[F]{}
     import dsl._
     HttpRoutes.of[F] {
       case GET -> Root / "weather" =>
         for {
-          weather <- W
+          weather <- Weather.impl(C)
           resp <- Ok(weather)
         } yield resp
     }

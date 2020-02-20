@@ -109,8 +109,6 @@ import org.http4s.Method._
   object Weather {
     //def apply[F[_]](implicit ev: Weather[F]): Weather[F] = ev
 
-    implicit def weatherEntityDecoder[F[_] : Sync]: EntityDecoder[F, Weather] = jsonOf
-
     implicit val decodeEvent: Decoder[Weather] =
       List[Decoder[Weather]](
         Decoder[Points].widen,
@@ -127,6 +125,7 @@ import org.http4s.Method._
         Decoder[Bearing1].widen
       ).reduceLeft(_ or _)
 
+    implicit def weatherEntityDecoder[F[_] : Sync]: EntityDecoder[F, Weather] = jsonOf
 
     final case class WeatherError(e: Throwable) extends RuntimeException
 
