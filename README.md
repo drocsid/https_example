@@ -20,7 +20,7 @@ I created a test case to prove I could decode a valid `JSON` string.
 
 ## Regarding Weather.scala at this point probably my biggest misses were:
 
-1) I created a `Weather` object containing my `ADT` trait / case classes. The trait and case classes can / should be top level. At this time I was calling that trait Shape2 (I named it this because reading regarding shapeless made me reason about creating typeclasses...) 
+1) I created a `Weather` object containing my `ADT` trait / case classes. The trait and case classes can / should be top level. At this time I was calling that trait `Shape2` (I named it this because reading regarding shapeless made me reason about creating typeclasses...) 
 
 2) I created the `GenericDerivation` object within this same file containing the encoder / decoders. More on this later...
 
@@ -32,7 +32,7 @@ Next I took the `Weather.scala` and used it to create a `Weathers.scala` to inte
 1) the `GenericDerivation` object could not allow the implicit decoders to be put in scope because the decoders needed to be part of an associated object for the trait used by the typeclass. 
 
 
-The first step towards the solution after discussion was sorting out mess above. I removed the `Weathers.scala` class and removed the outer object from `Weather`.scala. I removed the `GenericDerivation` object into a serperate file. I renamed the trait from `Shape2` to `Weather`. I created an associated object for the trait containing the http4s methods such as `impl` and `get` based on `Jokes.scala` as a reference.
+The first step towards the solution after discussion was sorting out mess above. I removed the `Weathers.scala` class and removed the outer object from `Weather.scala`. I removed the `GenericDerivation` object into a serperate file. I renamed the trait from `Shape2` to `Weather`. I created an associated object for the trait containing the http4s methods such as `impl` and `get` based on `Jokes.scala` as a reference.
 
 
 ## Regarding Weather.scala refactor misses at this point include
