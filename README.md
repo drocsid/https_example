@@ -32,7 +32,7 @@ Next I took the `Weather.scala` and used it to create a `Weathers.scala` to inte
 1) the `GenericDerivation` object could not allow the implicit decoders to be put in scope because the decoders needed to be part of an associated object for the trait used by the typeclass. 
 
 
-The first step was towards the solution after discussion was sorting out mess above. I removed the `Weathers.scala` class and removed the outer object from `Weather`.scala. I removed the `GenericDerivation` object into a serperate file. I renamed the trait from `Shape2` to `Weather`. I created an associated object for the trait containing the http4s methods such as `impl` and `get` based on `Jokes.scala` as a reference.
+The first step towards the solution after discussion was sorting out mess above. I removed the `Weathers.scala` class and removed the outer object from `Weather`.scala. I removed the `GenericDerivation` object into a serperate file. I renamed the trait from `Shape2` to `Weather`. I created an associated object for the trait containing the http4s methods such as `impl` and `get` based on `Jokes.scala` as a reference.
 
 
 ## Regarding Weather.scala refactor misses at this point include
