@@ -64,9 +64,9 @@ We removed the get method from the trait and this appears to be related to (2) a
 
 ## TLDR If my babble is incomprehensible I will try to summarize the hardest parts from my limited perspective
 
-1) `ADT` examples show the decoder as part of `GenericDeriviation` object but we needed to make the encoder / decoder part of the traits attached object. Then the pattern differs from the ADT example in the Circe docs and maybe doesn't consider the application from `HTTP4S`
+1) `ADT` examples show the decoder as part of `GenericDeriviation` object but we needed to make the encoder / decoder part of the traits attached object. Then the pattern differs from the `ADT` example in the `Circe` docs and maybe doesn't consider the application from `HTTP4S`
 
-2) Without comprehending `cats` changing the return types from `Weather[F]` to `F[Weather]` and related changes. I could not bridge this gap myself.
+2) Without comprehending `cats` changing the return types from `Weather[F]` to `F[Weather]` and related method changes ( get, apply removed, impl changed ). I could not bridge this gap myself.
 
 3) Somewhat significant differences required between the `Jokes` example in the gitter8 module and what we did to make a working example for my `ADT`.
 
