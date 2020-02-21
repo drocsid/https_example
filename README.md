@@ -2,8 +2,6 @@
 
 In this example we decode the API response from the weather.gov points endpoint.
 
-sbt new http4s/http4s.g8
-
 
 ## How I arrived at a solution based on the gitter8 module.
 
