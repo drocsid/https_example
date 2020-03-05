@@ -15,18 +15,32 @@ import org.http4s.dsl.io._
 import org.http4s.implicits._
 import org.http4s.server.blaze._
 
+import cats.Applicative
+import io.circe.generic.auto._
+import org.http4s.circe.{jsonEncoderOf, jsonOf}
+import cats.effect.Sync
+import cats.implicits._
+import io.circe.{Decoder, Encoder}
+import io.circe.generic.semiauto.deriveEncoder
+import org.http4s.implicits._
+import org.http4s.{EntityDecoder, EntityEncoder, Method, Request, Uri}
+import org.http4s.client.Client
+import org.http4s.client.dsl.Http4sClientDsl
+import org.http4s.Method._
+import org.http4s.circe._
+
 object WeatherdemoRoutes {
 
   val dsl = new Http4sDsl[IO]{}
   import dsl._
 
   def otherRoute(C:Client[IO]) = HttpRoutes.of[IO] {
-   case GET -> Root / "hello" / name =>
+   case GET -> Root / "goodbye" / name =>
       for {
-        json <- C.expect[Json](GET(uri"https://someurl" / name))
+        json <- C.expect[Json](uri"https://api.weather.gov/points/33.3287,-84.375")
         resp <- Ok(json)
       } yield resp
-  }.orNotFound
+  }
 
 
   def weatherRoutes[F[_]: Sync](C: Client[F]) = {

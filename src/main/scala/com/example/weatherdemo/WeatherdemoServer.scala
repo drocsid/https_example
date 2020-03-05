@@ -1,12 +1,13 @@
 package com.example.weatherdemo
 
-import cats.effect.{ConcurrentEffect, ContextShift, Timer}
+import cats.effect.{ConcurrentEffect, ContextShift, IO, Timer}
 import cats.implicits._
 import fs2.Stream
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.Logger
+
 import scala.concurrent.ExecutionContext.global
 
 object WeatherdemoServer {
@@ -14,6 +15,7 @@ object WeatherdemoServer {
   def stream[F[_]: ConcurrentEffect](implicit T: Timer[F], C: ContextShift[F]): Stream[F, Nothing] = {
     for {
       client <- BlazeClientBuilder[F](global).stream
+      ioclient <- BlazeClientBuilder[IO](global).resource.use{ client => IO.unit }
       helloWorldAlg = HelloWorld.impl[F]
       jokeAlg = Jokes.impl[F](client)
 
@@ -24,7 +26,8 @@ object WeatherdemoServer {
       httpApp = (
         WeatherdemoRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
         WeatherdemoRoutes.jokeRoutes[F](jokeAlg) <+>
-        WeatherdemoRoutes.weatherRoutes[F](client)
+        WeatherdemoRoutes.weatherRoutes[F](client) <+>
+        WeatherdemoRoutes.otherRoute(ioclient)
       ).orNotFound
 
       // With Middlewares in place
