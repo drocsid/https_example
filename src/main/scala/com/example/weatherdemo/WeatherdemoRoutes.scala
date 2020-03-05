@@ -34,7 +34,7 @@ object WeatherdemoRoutes {
   val dsl = new Http4sDsl[IO]{}
   import dsl._
 
-  def otherRoute(C:Client[IO]) = HttpRoutes.of[IO] {
+  def otherRoute[F[_]: Sync](C:Client[IO]) = HttpRoutes.of[IO] {
    case GET -> Root / "goodbye" / name =>
       for {
         json <- C.expect[Json](uri"https://api.weather.gov/points/33.3287,-84.375")
