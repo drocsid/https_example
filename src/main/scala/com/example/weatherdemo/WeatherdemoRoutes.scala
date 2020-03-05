@@ -17,15 +17,16 @@ import org.http4s.server.blaze._
 
 object WeatherdemoRoutes {
 
+  val dsl = new Http4sDsl[IO]{}
+  import dsl._
+
   def otherRoute(C:Client[IO]) = HttpRoutes.of[IO] {
-    //val dsl = new Http4sDsl[F]{}
-    //import dsl._
-    case GET -> Root / "hello" / name =>
+   case GET -> Root / "hello" / name =>
       for {
         json <- C.expect[Json](GET(uri"https://someurl" / name))
-        resp <- Ok
+        resp <- Ok(json)
       } yield resp
-  }
+  }.orNotFound
 
 
   def weatherRoutes[F[_]: Sync](C: Client[F]) = {
