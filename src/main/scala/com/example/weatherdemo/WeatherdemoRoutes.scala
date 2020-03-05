@@ -13,9 +13,9 @@ object WeatherdemoRoutes {
     val dsl = new Http4sDsl[F]{}
     import dsl._
     HttpRoutes.of[F] {
-      case GET -> Root / "weather" =>
+      case GET -> Root / "weather" / lat / lon =>
         for {
-          weather <- Weather.impl(C)
+          weather <- Weather.impl(C,lat,lon)
           resp <- Ok(weather)
         } yield resp
     }
