@@ -1,13 +1,32 @@
 package com.example.weatherdemo
 
 import io.circe.generic.auto._
-import cats.effect.Sync
+import cats.effect.{IO, Sync}
 import cats.implicits._
 import org.http4s.HttpRoutes
 import org.http4s.client.Client
 import org.http4s.dsl.Http4sDsl
+import io.circe.optics.JsonPath._
+import io.circe._
+import io.circe.parser._
+import cats.effect._
+import org.http4s._
+import org.http4s.dsl.io._
+import org.http4s.implicits._
+import org.http4s.server.blaze._
 
 object WeatherdemoRoutes {
+
+  def otherRoute(C:Client[IO]) = HttpRoutes.of[IO] {
+    //val dsl = new Http4sDsl[F]{}
+    //import dsl._
+    case GET -> Root / "hello" / name =>
+      for {
+        json <- C.expect[Json](GET(uri"https://someurl" / name))
+        resp <- Ok
+      } yield resp
+  }
+
 
   def weatherRoutes[F[_]: Sync](C: Client[F]) = {
     val dsl = new Http4sDsl[F]{}

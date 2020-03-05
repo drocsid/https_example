@@ -17,7 +17,7 @@ lazy val root = (project in file("."))
       "org.http4s"      %% "http4s-dsl"          % Http4sVersion,
       "io.circe"        %% "circe-generic"       % CirceVersion,
       "io.circe"        %% "circe-parser"        % CirceVersion,
-
+      "io.circe"        %% "circe-optics"        % CirceVersion,
       "org.specs2"      %% "specs2-core"         % Specs2Version % "test",
       "ch.qos.logback"  %  "logback-classic"     % LogbackVersion,
       "org.specs2"      %% "specs2-core"         % Specs2Version % "test",
