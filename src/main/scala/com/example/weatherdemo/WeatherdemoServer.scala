@@ -15,7 +15,7 @@ object WeatherdemoServer {
   def stream[F[_]: ConcurrentEffect](implicit T: Timer[F], C: ContextShift[F]): Stream[F, Nothing] = {
     for {
       client <- BlazeClientBuilder[F](global).stream
-      ioclient <- BlazeClientBuilder[IO](global).stream
+      //ioclient <- BlazeClientBuilder[IO](global).stream
       helloWorldAlg = HelloWorld.impl[F]
       jokeAlg = Jokes.impl[F](client)
 
@@ -27,7 +27,7 @@ object WeatherdemoServer {
         WeatherdemoRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
         WeatherdemoRoutes.jokeRoutes[F](jokeAlg) <+>
         WeatherdemoRoutes.weatherRoutes[F](client) <+>
-        WeatherdemoRoutes.otherRoute[F](ioclient)
+        WeatherdemoRoutes.otherRoute[F](client)
       ).orNotFound
 
       // With Middlewares in place

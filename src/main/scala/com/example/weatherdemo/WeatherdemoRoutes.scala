@@ -1,45 +1,32 @@
 package com.example.weatherdemo
 
-import io.circe.generic.auto._
-import cats.effect.{IO, Sync}
-import cats.implicits._
 import org.http4s.HttpRoutes
-import org.http4s.client.Client
 import org.http4s.dsl.Http4sDsl
-import io.circe.optics.JsonPath._
 import io.circe._
-import io.circe.parser._
-import cats.effect._
-import org.http4s._
-import org.http4s.dsl.io._
-import org.http4s.implicits._
-import org.http4s.server.blaze._
-
-import cats.Applicative
-import io.circe.generic.auto._
-import org.http4s.circe.{jsonEncoderOf, jsonOf}
 import cats.effect.Sync
 import cats.implicits._
-import io.circe.{Decoder, Encoder}
-import io.circe.generic.semiauto.deriveEncoder
 import org.http4s.implicits._
-import org.http4s.{EntityDecoder, EntityEncoder, Method, Request, Uri}
 import org.http4s.client.Client
-import org.http4s.client.dsl.Http4sClientDsl
-import org.http4s.Method._
+
 import org.http4s.circe._
+//import io.circe.optics.JsonPath._
 
 object WeatherdemoRoutes {
 
-  val dsl = new Http4sDsl[IO]{}
-  import dsl._
+  //val path = root.properties.forecast.string
+  def otherRoute[F[_]: Sync](C:Client[F]) =  {
+    val dsl = new Http4sDsl[F]{}
+    import dsl._
 
-  def otherRoute[F[_]: Sync](C:Client[IO]) = HttpRoutes.of[IO] {
-   case GET -> Root / "goodbye" / name =>
+    HttpRoutes.of[F] {
+      case GET -> Root / "goodbye" / name =>
       for {
         json <- C.expect[Json](uri"https://api.weather.gov/points/33.3287,-84.375")
+        //url <- path.getOption(json)
+        //url <- json.hcursor.downField("properties").downField("forecast").as[String]
         resp <- Ok(json)
       } yield resp
+    }
   }
 
 
