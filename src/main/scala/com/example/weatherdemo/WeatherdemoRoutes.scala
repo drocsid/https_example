@@ -9,22 +9,46 @@ import org.http4s.implicits._
 import org.http4s.client.Client
 
 import org.http4s.circe._
-//import io.circe.optics.JsonPath._
+import io.circe.optics.JsonPath._
 
 object WeatherdemoRoutes {
 
-  //val path = root.properties.forecast.string
-  def otherRoute[F[_]: Sync](C:Client[F]) =  {
+  val path = root.properties.forecast.string
+
+ def callbackRoute[F[_]:Sync](C:Client[F]) = {
+    val dsl = new Http4sDsl[F]{}
+    import dsl._
+    HttpRoutes.of[F] {
+      case req @ POST -> Root / "sms" / "callback" =>
+        for {
+          json <- req.asJson
+          phoneNumber <- json.hcursor.downField("data").downField("attributes").downField("from").as[String].liftTo[F]
+          locationString <-json.hcursor.downField("data").downField("attributes").downField("body").as[String].liftTo[F]
+          trim = locationString.split(' ')
+          pointsApiJson <- C.expect[Json](uri"https://api.weather.gov/points" / s"${trim(0)},${trim(1)}") //33.3287,-84.375")
+          forecastApiUrl <- pointsApiJson.hcursor.downField("properties").downField("forecast").as[String].liftTo[F]
+          forecastJson <- C.expect[Json](forecastApiUrl)
+          b={
+            println(forecastJson)
+            println(phoneNumber)
+          }
+          resp <- Ok(b)
+      } yield resp
+
+    }
+  }
+
+  def otherRoute[F[_]:Sync](C:Client[F]) = {
     val dsl = new Http4sDsl[F]{}
     import dsl._
 
     HttpRoutes.of[F] {
-      case GET -> Root / "goodbye" / name =>
+      case GET -> Root / "goodbye" / lat / lon =>
       for {
-        json <- C.expect[Json](uri"https://api.weather.gov/points/33.3287,-84.375")
-        //url <- path.getOption(json)
-        //url <- json.hcursor.downField("properties").downField("forecast").as[String]
-        resp <- Ok(json)
+        json <- C.expect[Json](uri"https://api.weather.gov/points" / s"$lat,$lon")
+        url <- json.hcursor.downField("properties").downField("forecast").as[String].liftTo[F]
+        json2 <- C.expect[Json](url)
+        resp <- Ok(json2)
       } yield resp
     }
   }

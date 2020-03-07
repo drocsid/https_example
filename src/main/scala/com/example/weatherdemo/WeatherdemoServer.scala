@@ -27,14 +27,15 @@ object WeatherdemoServer {
         WeatherdemoRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
         WeatherdemoRoutes.jokeRoutes[F](jokeAlg) <+>
         WeatherdemoRoutes.weatherRoutes[F](client) <+>
-        WeatherdemoRoutes.otherRoute[F](client)
+        WeatherdemoRoutes.otherRoute[F](client) <+>
+        WeatherdemoRoutes.callbackRoute[F](client)
       ).orNotFound
 
       // With Middlewares in place
       finalHttpApp = Logger.httpApp(true, true)(httpApp)
 
       exitCode <- BlazeServerBuilder[F]
-        .bindHttp(8080, "0.0.0.0")
+        .bindHttp(9090, "0.0.0.0")
         .withHttpApp(finalHttpApp)
         .serve
     } yield exitCode
