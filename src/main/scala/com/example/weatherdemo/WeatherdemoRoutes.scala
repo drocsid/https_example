@@ -36,7 +36,7 @@ object WeatherdemoRoutes {
           forecastJson <- C.expect[Json](forecastApiUrl)
           attributes = Attributes(phoneNumber, "7472252338","forecastString")
           reqi2 = POST(Message1("message", attributes).asJson, uri"https://api.flowroute.com/v2")
-          sendTextJson <- C.expect[Json](reqi2)  // C.expect[Json](req)
+          sendTextJson <- C.expect[Json](reqi2)
           resp <- Ok(phoneNumber)
      } yield resp
 
@@ -47,8 +47,12 @@ object WeatherdemoRoutes {
   def makeRequest[F[_]:Sync](C:Client[F], attributes: Attributes) = {
     val dsl2 = org.http4s.client.dsl.Http4sClientDsl
     import dsl2._
+    import org.http4s.client.dsl.io._
+    import org.http4s.headers._
+    import org.http4s.MediaType
+    import org.http4s.Method._
     val req = POST(Message1("message", attributes).asJson, uri"https://api.flowroute.com/v2")
-    C.expect[Json](req) // C.expect[Json](req)
+    C.expect[Json](req)
   }
    */
 

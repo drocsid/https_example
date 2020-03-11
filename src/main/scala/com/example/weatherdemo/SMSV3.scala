@@ -1,5 +1,6 @@
 package com.example.weatherdemo
 
+import cats.Applicative
 import io.circe.syntax._
 import io.circe.generic.auto._
 
