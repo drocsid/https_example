@@ -1,8 +1,5 @@
 package com.example.weatherdemo
 
-import io.circe.syntax._
-import io.circe.generic.auto._
-
   case class Message1 (
     `type`: String,
     attributes: Attributes
@@ -13,11 +10,3 @@ import io.circe.generic.auto._
      from: String,
      body: String
   )
-
-  object SMSV3 {
-    // def attributer = Message1("sms", Attributes("me","you","message") ).asJson
-  }
-
-
-
-

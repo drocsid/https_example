@@ -32,29 +32,26 @@ object WeatherdemoRoutes {
           pointsApiJson <- C.expect[Json](uri"https://api.weather.gov/points" / s"${trim(0)},${trim(1)}")
           forecastApiUrl <- pointsApiJson.hcursor.downField("properties").downField("forecast").as[String].liftTo[F]
           forecastJson <- C.expect[Json](forecastApiUrl)
-
-          b={
-            println(forecastJson)
-            println(phoneNumber)
-          }
-
           attributes = Attributes(phoneNumber, "7472252338","forecastString")
+
           //val dsl2 = org.http4s.client.dsl.Http4sClientDsl
           //import dsl2._
-          reqi2 = POST(Message1("message", attributes).asJson, uri"https://api.flowroute.com/v2")
-          sendTextJson <- C.expect[Json](reqi2)  // C.expect[Json](req)
-          resp <- Ok(b)
+          //reqi2 = POST(Message1("message", attributes).asJson, uri"https://api.flowroute.com/v2")
+          //sendTextJson <- C.expect[Json](reqi2)  // C.expect[Json](req)
+          resp <- Ok(phoneNumber)
      } yield resp
 
     }
   }
 
-  def triggerRoute(C: Client[F], attributes: Attributes) = {
+  /*
+  def makeRequest[F[_]:Sync](C:Client[F], attributes: Attributes) = {
     val dsl2 = org.http4s.client.dsl.Http4sClientDsl
     import dsl2._
     val req = POST(Message1("message", attributes).asJson, uri"https://api.flowroute.com/v2")
     C.expect[Json](req) // C.expect[Json](req)
   }
+   */
 
 
   def otherRoute[F[_]:Sync](C:Client[F]) = {
