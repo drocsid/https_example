@@ -10,7 +10,7 @@ import cats.implicits._
 import org.http4s.implicits._
 import org.http4s.client.Client
 
-import org.http4s.client.dsl.io._
+//import org.http4s.client.dsl.io._
 
 import org.http4s.circe._
 import io.circe.optics.JsonPath._
@@ -22,6 +22,8 @@ object WeatherdemoRoutes {
  def callbackRoute[F[_]:Sync](C:Client[F]) = {
     val dsl = new Http4sDsl[F]{}
     import dsl._
+    val dsl2 = org.http4s.client.dsl.Http4sClientDsl
+    import dsl2._
     HttpRoutes.of[F] {
       case req @ POST -> Root / "sms" / "callback" =>
         for {
@@ -33,11 +35,8 @@ object WeatherdemoRoutes {
           forecastApiUrl <- pointsApiJson.hcursor.downField("properties").downField("forecast").as[String].liftTo[F]
           forecastJson <- C.expect[Json](forecastApiUrl)
           attributes = Attributes(phoneNumber, "7472252338","forecastString")
-
-          //val dsl2 = org.http4s.client.dsl.Http4sClientDsl
-          //import dsl2._
-          //reqi2 = POST(Message1("message", attributes).asJson, uri"https://api.flowroute.com/v2")
-          //sendTextJson <- C.expect[Json](reqi2)  // C.expect[Json](req)
+          reqi2 = POST(Message1("message", attributes).asJson, uri"https://api.flowroute.com/v2")
+          sendTextJson <- C.expect[Json](reqi2)  // C.expect[Json](req)
           resp <- Ok(phoneNumber)
      } yield resp
 
