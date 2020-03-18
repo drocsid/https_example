@@ -30,13 +30,11 @@ object WeatherdemoRoutes {
           json <- req.asJson
           phoneNumber <- json.hcursor.downField("data").downField("attributes").downField("from").as[String].liftTo[F]
           locationString <-json.hcursor.downField("data").downField("attributes").downField("body").as[String].liftTo[F]
-          trim = locationString.split(' ')
-          pointsApiJson <- C.expect[Json](uri"https://api.weather.gov/points" / s"${trim(0)},${trim(1)}")
+          opt = Util.incoming(locationString)
+          pointsApiJson <- C.expect[Json](uri"https://api.weather.gov/points" / s"${opt.get._1},${opt.get._2}")
           forecastApiUrl <- pointsApiJson.hcursor.downField("properties").downField("forecast").as[String].liftTo[F]
           forecastJson <- C.expect[Json](forecastApiUrl)
           attributes = Attributes(phoneNumber, "7472252338","forecastString")
-          reqi2 = POST(Message1("message", attributes).asJson, uri"https://api.flowroute.com/v2")
-          sendTextJson <- C.expect[Json](reqi2)
           resp <- Ok(phoneNumber)
      } yield resp
 
