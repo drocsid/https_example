@@ -30,16 +30,18 @@ object WeatherdemoRoutes {
           json <- req.asJson
           phoneNumber <- json.hcursor.downField("data").downField("attributes").downField("from").as[String].liftTo[F]
           locationString <-json.hcursor.downField("data").downField("attributes").downField("body").as[String].liftTo[F]
-          opt = Util.incoming(locationString)
-          pointsApiJson <- C.expect[Json](uri"https://api.weather.gov/points" / s"${opt.get._1},${opt.get._2}")
-          forecastApiUrl <- pointsApiJson.hcursor.downField("properties").downField("forecast").as[String].liftTo[F]
-          forecastJson <- C.expect[Json](forecastApiUrl)
-          attributes = Attributes(phoneNumber, "7472252338","forecastString")
-          resp <- Ok(phoneNumber)
-     } yield resp
-
+          fin <- Util.incoming(locationString).fold(BadRequest("bad location")){
+            case (x,y) => for {
+              pointsApiJson <- C.expect[Json](uri"https://api.weather.gov/points" / s"${x},${y}")
+              forecastApiUrl <- pointsApiJson.hcursor.downField("properties").downField("forecast").as[String].liftTo[F]
+              forecastJson <- C.expect[Json](forecastApiUrl)
+              attributes = Attributes(phoneNumber, "7472252338","forecastString")
+              resp <- Ok("ok")
+            } yield resp
+          }
+        } yield fin
     }
-  }
+ }
 
   /*
   def makeRequest[F[_]:Sync](C:Client[F], attributes: Attributes) = {
