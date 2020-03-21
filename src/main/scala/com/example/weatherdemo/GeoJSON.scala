@@ -27,38 +27,49 @@ object GeoJSON {
   case class Point(coordinates: (Double, Double)) extends SimpleGeometry
 
   case class MultiPoint(coordinates: IndexedSeq[(Double, Double)])
-      extends SimpleGeometry
+    extends SimpleGeometry
 
   case class LineString(coordinates: IndexedSeq[(Double, Double)])
-      extends SimpleGeometry
+    extends SimpleGeometry
 
   case class MultiLineString(
-      coordinates: IndexedSeq[IndexedSeq[(Double, Double)]]
-  ) extends SimpleGeometry
+                              coordinates: IndexedSeq[IndexedSeq[(Double, Double)]]
+                            ) extends SimpleGeometry
 
   case class Polygon(coordinates: IndexedSeq[IndexedSeq[(Double, Double)]])
-      extends SimpleGeometry
+    extends SimpleGeometry
 
   case class MultiPolygon(
-      coordinates: IndexedSeq[IndexedSeq[IndexedSeq[(Double, Double)]]]
-  ) extends SimpleGeometry
+                           coordinates: IndexedSeq[IndexedSeq[IndexedSeq[(Double, Double)]]]
+                         ) extends SimpleGeometry
 
   case class GeometryCollection(geometries: IndexedSeq[SimpleGeometry])
-      extends Geometry
+    extends Geometry
 
   sealed trait GeoJSON extends Product with Serializable
 
   sealed trait SimpleGeoJSON extends GeoJSON
 
   case class Feature(
-      properties: Map[String, String] = Map.empty,
-      geometry: Geometry,
-      bbox: Option[(Double, Double, Double, Double)] = None
-  ) extends SimpleGeoJSON
+                      properties: Map[String, String] = Map.empty,
+                      geometry: Geometry,
+                      bbox: Option[(Double, Double, Double, Double)] = None
+                    ) extends SimpleGeoJSON
 
   case class FeatureCollection(
-      features: IndexedSeq[SimpleGeoJSON],
-      bbox: Option[(Double, Double, Double, Double)] = None
-  ) extends GeoJSON
+                                features: IndexedSeq[SimpleGeoJSON],
+                                bbox: Option[(Double, Double, Double, Double)] = None
+                              ) extends GeoJSON
 
+  implicit val config: Configuration = Configuration.default.withDefaults.withDiscriminator("type")
+
+  implicit val geoJSONC3c: Codec[GeoJSON.GeoJSON] = {
+    implicit val c1: Codec[GeoJSON.SimpleGeometry] =
+      deriveConfiguredCodec[GeoJSON.SimpleGeometry]
+    implicit val c2: Codec[GeoJSON.Geometry] =
+      deriveConfiguredCodec[GeoJSON.Geometry]
+    implicit val c3: Codec[GeoJSON.SimpleGeoJSON] =
+      deriveConfiguredCodec[GeoJSON.SimpleGeoJSON]
+    deriveConfiguredCodec[GeoJSON.GeoJSON]
+  }
 }
