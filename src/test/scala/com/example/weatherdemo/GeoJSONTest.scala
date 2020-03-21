@@ -2,7 +2,6 @@ package com.example.weatherdemo
 
 import com.example.weatherdemo.GeoJSON.GeoJSON
 
-
 import io.circe.Codec
 import io.circe.parser.decode
 import org.scalatest.flatspec.AnyFlatSpec
@@ -70,15 +69,17 @@ class GeoJSONTest extends AnyFlatSpec with Matchers {
     }
 }
 """
-      implicit val geoJSONC3c: Codec[GeoJSON.GeoJSON] = {
-        implicit val c1: Codec[GeoJSON.SimpleGeometry] = deriveConfiguredCodec[GeoJSON.SimpleGeometry]
-        implicit val c2: Codec[GeoJSON.Geometry] = deriveConfiguredCodec[GeoJSON.Geometry]
-        implicit val c3: Codec[GeoJSON.SimpleGeoJSON] = deriveConfiguredCodec[GeoJSON.SimpleGeoJSON]
-        deriveConfiguredCodec[GeoJSON.GeoJSON]
-      }
+    implicit val geoJSONC3c: Codec[GeoJSON.GeoJSON] = {
+      implicit val c1: Codec[GeoJSON.SimpleGeometry] =
+        deriveConfiguredCodec[GeoJSON.SimpleGeometry]
+      implicit val c2: Codec[GeoJSON.Geometry] =
+        deriveConfiguredCodec[GeoJSON.Geometry]
+      implicit val c3: Codec[GeoJSON.SimpleGeoJSON] =
+        deriveConfiguredCodec[GeoJSON.SimpleGeoJSON]
+      deriveConfiguredCodec[GeoJSON.GeoJSON]
+    }
     implicit val decoded = decode[GeoJSON](modelSchema)
     println(decoded)
     decoded.isRight shouldBe (true)
   }
 }
-

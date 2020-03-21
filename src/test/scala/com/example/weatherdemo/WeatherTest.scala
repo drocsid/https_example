@@ -105,4 +105,3 @@ class WeatherTest extends AnyFlatSpec with Matchers {
     decoded.isRight shouldBe (true)
   }
 }
-

@@ -19,8 +19,8 @@ object WeatherdemoRoutes {
 
   val path = root.fproperties.forecast.string
 
- def callbackRoute[F[_]:Sync](C:Client[F]) = {
-    val dsl = new Http4sDsl[F]{}
+  def callbackRoute[F[_]: Sync](C: Client[F]) = {
+    val dsl = new Http4sDsl[F] {}
     import dsl._
     val dsl2 = org.http4s.client.dsl.Http4sClientDsl
     import dsl2._
@@ -28,20 +28,43 @@ object WeatherdemoRoutes {
       case req @ POST -> Root / "sms" / "callback" =>
         for {
           json <- req.asJson
-          phoneNumber <- json.hcursor.downField("data").downField("attributes").downField("from").as[String].liftTo[F]
-          locationString <-json.hcursor.downField("data").downField("attributes").downField("body").as[String].liftTo[F]
-          fin <- Util.incoming(locationString).fold(BadRequest("bad location")){
-            case (x,y) => for {
-              pointsApiJson <- C.expect[Json](uri"https://api.weather.gov/points" / s"${x},${y}")
-              forecastApiUrl <- pointsApiJson.hcursor.downField("properties").downField("forecast").as[String].liftTo[F]
-              forecastJson <- C.expect[Json](forecastApiUrl)
-              attributes = Attributes(phoneNumber, "7472252338","forecastString")
-              resp <- Ok("ok")
-            } yield resp
-          }
+          phoneNumber <- json.hcursor
+            .downField("data")
+            .downField("attributes")
+            .downField("from")
+            .as[String]
+            .liftTo[F]
+          locationString <- json.hcursor
+            .downField("data")
+            .downField("attributes")
+            .downField("body")
+            .as[String]
+            .liftTo[F]
+          fin <- Util
+            .incoming(locationString)
+            .fold(BadRequest("bad location")) {
+              case (x, y) =>
+                for {
+                  pointsApiJson <- C.expect[Json](
+                    uri"https://api.weather.gov/points" / s"${x},${y}"
+                  )
+                  forecastApiUrl <- pointsApiJson.hcursor
+                    .downField("properties")
+                    .downField("forecast")
+                    .as[String]
+                    .liftTo[F]
+                  forecastJson <- C.expect[Json](forecastApiUrl)
+                  attributes = Attributes(
+                    phoneNumber,
+                    "7472252338",
+                    "forecastString"
+                  )
+                  resp <- Ok("ok")
+                } yield resp
+            }
         } yield fin
     }
- }
+  }
 
   /*
   def makeRequest[F[_]:Sync](C:Client[F], attributes: Attributes) = {
@@ -56,37 +79,41 @@ object WeatherdemoRoutes {
   }
    */
 
-
-  def otherRoute[F[_]:Sync](C:Client[F]) = {
-    val dsl = new Http4sDsl[F]{}
+  def otherRoute[F[_]: Sync](C: Client[F]) = {
+    val dsl = new Http4sDsl[F] {}
     import dsl._
 
     HttpRoutes.of[F] {
       case GET -> Root / "goodbye" / lat / lon =>
-      for {
-        json <- C.expect[Json](uri"https://api.weather.gov/points" / s"$lat,$lon")
-        url <- json.hcursor.downField("properties").downField("forecast").as[String].liftTo[F]
-        json2 <- C.expect[Json](url)
-        resp <- Ok(json2)
-      } yield resp
+        for {
+          json <- C.expect[Json](
+            uri"https://api.weather.gov/points" / s"$lat,$lon"
+          )
+          url <- json.hcursor
+            .downField("properties")
+            .downField("forecast")
+            .as[String]
+            .liftTo[F]
+          json2 <- C.expect[Json](url)
+          resp <- Ok(json2)
+        } yield resp
     }
   }
 
-
   def weatherRoutes[F[_]: Sync](C: Client[F]) = {
-    val dsl = new Http4sDsl[F]{}
+    val dsl = new Http4sDsl[F] {}
     import dsl._
     HttpRoutes.of[F] {
       case GET -> Root / "weather" / lat / lon =>
         for {
-          weather <- Weather.impl(C,lat,lon)
+          weather <- Weather.impl(C, lat, lon)
           resp <- Ok(weather)
         } yield resp
     }
   }
 
   def jokeRoutes[F[_]: Sync](J: Jokes[F]): HttpRoutes[F] = {
-    val dsl = new Http4sDsl[F]{}
+    val dsl = new Http4sDsl[F] {}
     import dsl._
     HttpRoutes.of[F] {
       case GET -> Root / "joke" =>
@@ -98,7 +125,7 @@ object WeatherdemoRoutes {
   }
 
   def helloWorldRoutes[F[_]: Sync](H: HelloWorld[F]): HttpRoutes[F] = {
-    val dsl = new Http4sDsl[F]{}
+    val dsl = new Http4sDsl[F] {}
     import dsl._
     HttpRoutes.of[F] {
       case GET -> Root / "hello" / name =>

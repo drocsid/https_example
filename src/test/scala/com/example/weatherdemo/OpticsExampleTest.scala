@@ -101,10 +101,10 @@ class OpticsExampleTest extends AnyFlatSpec with Matchers {
         "radarStation": "KTWX"
     }
 }"""
-    val parsedJson = parse(modelSchema).getOrElse(throw new IllegalArgumentException(""))
+    val parsedJson =
+      parse(modelSchema).getOrElse(throw new IllegalArgumentException(""))
     val path = root.properties.forecast.string
     val url = path.getOption(parsedJson)
     url shouldBe Some("https://api.weather.gov/gridpoints/TOP/34,46/forecast")
   }
 }
-

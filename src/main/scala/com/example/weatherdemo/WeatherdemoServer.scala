@@ -12,7 +12,10 @@ import scala.concurrent.ExecutionContext.global
 
 object WeatherdemoServer {
 
-  def stream[F[_]: ConcurrentEffect](implicit T: Timer[F], C: ContextShift[F]): Stream[F, Nothing] = {
+  def stream[F[_]: ConcurrentEffect](
+      implicit T: Timer[F],
+      C: ContextShift[F]
+  ): Stream[F, Nothing] = {
     for {
       client <- BlazeClientBuilder[F](global).stream
       //ioclient <- BlazeClientBuilder[IO](global).stream
@@ -25,10 +28,10 @@ object WeatherdemoServer {
       // in the underlying routes.
       httpApp = (
         WeatherdemoRoutes.helloWorldRoutes[F](helloWorldAlg) <+>
-        WeatherdemoRoutes.jokeRoutes[F](jokeAlg) <+>
-        WeatherdemoRoutes.weatherRoutes[F](client) <+>
-        WeatherdemoRoutes.otherRoute[F](client) <+>
-        WeatherdemoRoutes.callbackRoute[F](client)
+          WeatherdemoRoutes.jokeRoutes[F](jokeAlg) <+>
+          WeatherdemoRoutes.weatherRoutes[F](client) <+>
+          WeatherdemoRoutes.otherRoute[F](client) <+>
+          WeatherdemoRoutes.callbackRoute[F](client)
       ).orNotFound
 
       // With Middlewares in place
