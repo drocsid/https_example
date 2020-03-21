@@ -52,15 +52,4 @@ object GeoJSON {
                                features: IndexedSeq[SimpleGeoJSON],
                                bbox: Option[(Double, Double, Double, Double)] = None) extends GeoJSON
 
-  implicit val geoJSONC3c: Codec[GeoJSON.GeoJSON] = {
-  implicit val c1: Codec[GeoJSON.SimpleGeometry] = deriveConfiguredCodec[GeoJSON.SimpleGeometry]
-  implicit val c2: Codec[GeoJSON.Geometry] = deriveConfiguredCodec[GeoJSON.Geometry]
-  implicit val c3: Codec[GeoJSON.SimpleGeoJSON] = deriveConfiguredCodec[GeoJSON.SimpleGeoJSON]
-  deriveConfiguredCodec[GeoJSON.GeoJSON]
- }
-
-
-
-
-
 }
