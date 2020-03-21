@@ -5,7 +5,7 @@ import io.circe.generic.auto._
 import org.http4s.circe.{jsonEncoderOf, jsonOf}
 import cats.effect.Sync
 import cats.implicits._
-import io.circe.{Decoder, Encoder}
+import io.circe.{Decoder, Encoder, Json}
 import io.circe.generic.semiauto.deriveEncoder
 import org.http4s.{EntityDecoder, EntityEncoder, Method, Request, Uri}
 
@@ -32,8 +32,7 @@ case class Geometry3(
 
 case class Geometries(
   `type`: String,
-  coordinates: Option[Seq[Seq[Seq[Double]]]],
-  coordinates2: Option[Seq[Double]]
+  coordinates: Either[Seq[Double],Seq[Seq[Seq[Double]]]]
 ) extends WeatherForecast
 
 case class Properties2(
