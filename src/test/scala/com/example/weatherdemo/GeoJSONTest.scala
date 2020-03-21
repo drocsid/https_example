@@ -69,6 +69,8 @@ class GeoJSONTest extends AnyFlatSpec with Matchers {
     }
 }
 """
+    implicit val config: Configuration = Configuration.default.withDefaults.withDiscriminator("type")
+
     implicit val geoJSONC3c: Codec[GeoJSON.GeoJSON] = {
       implicit val c1: Codec[GeoJSON.SimpleGeometry] =
         deriveConfiguredCodec[GeoJSON.SimpleGeometry]
