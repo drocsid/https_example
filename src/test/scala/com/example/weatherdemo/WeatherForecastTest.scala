@@ -286,7 +286,7 @@ class WeatherForecastTest extends AnyFlatSpec with Matchers {
 }
 """
 
-    implicit val decoded = decode[WeatherForecast](modelSchema)
+    implicit val decoded = decode[WeatherAPI.Forecast](modelSchema)
     println(decoded)
     decoded.isRight shouldBe (true)
   }

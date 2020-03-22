@@ -14,7 +14,7 @@ sealed trait WeatherForecast
 case class Forecast(
     `@context`: (String, Seq[Context2]),
     `type`: String,
-    //geometry: GeoJson.
+    geometry: Geometry3,
     properties: Properties2
 ) extends WeatherForecast
 
@@ -23,6 +23,17 @@ case class Context2(
     geo: String,
     unit: String,
     `@vocab`: String
+) extends WeatherForecast
+
+
+case class Geometry3(
+    `type`: String,
+    geometries: Seq[Geometries]
+) extends WeatherForecast
+
+case class Geometries(
+    `type`: String,
+    coordinates: Either[Seq[Double], Seq[Seq[Seq[Double]]]]
 ) extends WeatherForecast
 
 case class Properties2(
@@ -62,8 +73,8 @@ object WeatherForecast {
     List[Decoder[WeatherForecast]](
       Decoder[Forecast].widen,
       Decoder[Context2].widen,
-  //    Decoder[Geometry3].widen,
-  //    Decoder[Geometries].widen,
+      Decoder[Geometry3].widen,
+      Decoder[Geometries].widen,
       Decoder[Properties2].widen,
       Decoder[Elevation].widen,
       Decoder[Periods].widen
