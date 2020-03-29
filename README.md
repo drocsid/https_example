@@ -1,4 +1,4 @@
-Example of `Segmentation Fault` using `http4s` with `native-image`. Run `native-image-build-cmd.sh` to build the image. Execute the `native-image` binary ./weatherdemo after creation. Finally run `425.sh` to make a request trigger the application code. Assuming that the last client request execution gives a segfault.
+Example of `Segmentation Fault` using `http4s` with `native-image`. Run `native-image-build-cmd.sh` to build the image. Execute the `native-image` binary `./weatherdemo` after creation. Finally run `425.sh` to make a request trigger the application code. Assuming that the last client request execution gives a segfault.
 
 https://github.com/drocsid/https_example/blob/fc2203815f1f5f03547971048bef929b6634cff0/src/main/scala/com/example/weatherdemo/WeatherdemoRoutes.scala#L75
 
