@@ -3,6 +3,7 @@ val CirceVersion = "0.13.0"
 val Specs2Version = "4.8.3"
 val LogbackVersion = "1.2.3"
 val ScalaTestVersion = "3.1.0"
+resolvers += Resolver.sonatypeRepo("releases")
 
 lazy val root = (project in file("."))
   .settings(
@@ -22,7 +23,10 @@ lazy val root = (project in file("."))
       "org.specs2" %% "specs2-core" % Specs2Version % "test",
       "ch.qos.logback" % "logback-classic" % LogbackVersion,
       "org.specs2" %% "specs2-core" % Specs2Version % "test",
-      "org.scalatest" %% "scalatest" % ScalaTestVersion % "test"
+      "org.scalatest" %% "scalatest" % ScalaTestVersion % "test",
+      "com.github.gekomad" %% "itto-csv" % "1.1.0",
+      "io.kontainers" %% "purecsv" % "0.3.3",
+      "org.codehaus.janino" % "janino" % "3.1.2"
     ),
     addCompilerPlugin("org.typelevel" %% "kind-projector" % "0.10.3"),
     addCompilerPlugin("com.olegpy" %% "better-monadic-for" % "0.3.0")

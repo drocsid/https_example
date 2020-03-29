@@ -9,20 +9,19 @@ import cats.effect.Sync
 import cats.implicits._
 import org.http4s.implicits._
 import org.http4s.client.Client
-
-//import org.http4s.client.dsl.io._
+import org.http4s.client.dsl.Http4sClientDsl
 
 import org.http4s.circe._
 import io.circe.optics.JsonPath._
 
 object WeatherdemoRoutes {
-
+  private val logger = org.log4s.getLogger
   val path = root.fproperties.forecast.string
 
   def callbackRoute[F[_]: Sync](C: Client[F]) = {
     val dsl = new Http4sDsl[F] {}
     import dsl._
-    val dsl2 = org.http4s.client.dsl.Http4sClientDsl
+    val dsl2 = new Http4sClientDsl[F] {}
     import dsl2._
     HttpRoutes.of[F] {
       case req @ POST -> Root / "sms" / "callback" =>
@@ -46,7 +45,7 @@ object WeatherdemoRoutes {
               case (x, y) =>
                 for {
                   pointsApiJson <- C.expect[Json](
-                    uri"https://api.weather.gov/points" / s"${x},${y}"
+                    uri"https://api.weather.gov/points" / s"${x.coordinate.toString},${y.coordinate.toString}"
                   )
                   forecastApiUrl <- pointsApiJson.hcursor
                     .downField("properties")
@@ -59,25 +58,22 @@ object WeatherdemoRoutes {
                     "7472252338",
                     "forecastString"
                   )
-                  resp <- Ok("ok")
+                  reqJson <- makeRequest(C,attributes)
+                  resp <- Ok(reqJson)
                 } yield resp
             }
         } yield fin
     }
   }
 
-  /*
   def makeRequest[F[_]:Sync](C:Client[F], attributes: Attributes) = {
-    val dsl2 = org.http4s.client.dsl.Http4sClientDsl
+    val dsl2 = new Http4sClientDsl[F]{}
     import dsl2._
-    import org.http4s.client.dsl.io._
-    import org.http4s.headers._
-    import org.http4s.MediaType
     import org.http4s.Method._
-    val req = POST(Message1("message", attributes).asJson, uri"https://api.flowroute.com/v2")
+    val req = POST(Message1("message", attributes).asJson, uri"https://api.flowroute.com/v2/messages")
+    logger.info(s"request $req")
     C.expect[Json](req)
   }
-   */
 
   def otherRoute[F[_]: Sync](C: Client[F]) = {
     val dsl = new Http4sDsl[F] {}
