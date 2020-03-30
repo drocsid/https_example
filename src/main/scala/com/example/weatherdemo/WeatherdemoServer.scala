@@ -3,6 +3,7 @@ package com.example.weatherdemo
 import cats.effect.{ConcurrentEffect, ContextShift, IO, Timer}
 import cats.implicits._
 import fs2.Stream
+import javax.net.ssl.SSLContext
 import org.http4s.client.blaze.BlazeClientBuilder
 import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
@@ -17,7 +18,9 @@ object WeatherdemoServer {
       C: ContextShift[F]
   ): Stream[F, Nothing] = {
     for {
-      client <- BlazeClientBuilder[F](global).stream
+      client <- BlazeClientBuilder[F](global)
+        .withSslContext(SSLContext.getDefault())
+        .stream
       //ioclient <- BlazeClientBuilder[IO](global).stream
       helloWorldAlg = HelloWorld.impl[F]
       jokeAlg = Jokes.impl[F](client)
