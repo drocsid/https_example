@@ -2,11 +2,9 @@ package com.example.weatherdemo
 
 import com.example.weatherdemo.GeoJSON.GeoJSON
 
-
 import io.circe.parser.decode
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-
 
 class GeoJSONTest extends AnyFlatSpec with Matchers {
 
