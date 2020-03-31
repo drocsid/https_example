@@ -25,7 +25,6 @@ case class Context2(
     `@vocab`: String
 ) extends WeatherForecast
 
-
 case class Geometry3(
     `type`: String,
     geometries: Seq[Geometries]
