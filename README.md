@@ -1,4 +1,4 @@
-Example of ``java.net.SocketException: Protocol family unavailable` using `http4s` with `native-image` when binding to IPv6. No issue with IPv4. Run `native-image-build-cmd.sh` to build the assembled jar and then the native image. Execute the `native-image` binary `./nativeImage` after creation. 
+Example of `java.net.SocketException: Protocol family unavailable` using `http4s` with `native-image` when binding to IPv6. No issue with IPv4. Run `native-image-build-cmd.sh` to build the assembled jar and then the native image. Execute the `native-image` binary `./nativeImage` after creation. 
 
 
 From STDOUT:
