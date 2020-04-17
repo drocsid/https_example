@@ -8,10 +8,10 @@ import org.http4s.implicits._
 import org.http4s.server.blaze.BlazeServerBuilder
 import org.http4s.server.middleware.Logger
 import org.http4s.client.Client
-import org.http4s.client.asynchttpclient.AsyncHttpClient
-import org.http4s.client.jdkhttpclient.JdkHttpClient
+//import org.http4s.client.asynchttpclient.AsyncHttpClient
+//import org.http4s.client.jdkhttpclient.JdkHttpClient
 import org.http4s.client.blaze.BlazeClientBuilder
-import org.http4s.ember.client.EmberClientBuilder
+//import org.http4s.ember.client.EmberClientBuilder
 
 import scala.concurrent.ExecutionContext.global
 
@@ -22,12 +22,12 @@ object WeatherdemoServer {
       C: ContextShift[F]
   ): Stream[F, Nothing] = {
     for {
-      client <- Stream.resource(EmberClientBuilder.default.build)
+      //client <- Stream.resource(EmberClientBuilder.default.build)
       //client <- Stream.eval[F,Client[F]](JdkHttpClient.simple)
       //client <- Stream.resource(AsyncHttpClient.resource[F]() _)
-      //client <- BlazeClientBuilder[F](global)
-      // .withSslContext(SSLContext.getDefault())
-      // .stream
+      client <- BlazeClientBuilder[F](global)
+       .withSslContext(SSLContext.getDefault())
+       .stream
       helloWorldAlg = HelloWorld.impl[F]
       jokeAlg = Jokes.impl[F](client)
 
@@ -47,7 +47,7 @@ object WeatherdemoServer {
       finalHttpApp = Logger.httpApp(true, true)(httpApp)
 
       exitCode <- BlazeServerBuilder[F]
-        .bindHttp(9090, "0.0.0.0")
+        .bindHttp(8080, "::1")
         .withHttpApp(finalHttpApp)
         .serve
     } yield exitCode

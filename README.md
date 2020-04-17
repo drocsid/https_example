@@ -1,13 +1,55 @@
-Example of `Segmentation Fault` using `http4s` with `native-image`. Run `native-image-build-cmd.sh` to build the image. Execute the `native-image` binary `./weatherdemo` after creation. Finally run `425.sh` to make a request trigger the application code. Assuming that the last client request execution gives a segfault.
+Example of ``java.net.SocketException: Protocol family unavailable` using `http4s` with `native-image` when binding to IPv6. No issue with IPv4. Run `native-image-build-cmd.sh` to build the assembled jar and then the native image. Execute the `native-image` binary `./nativeImage` after creation. 
 
-https://github.com/drocsid/https_example/blob/fc2203815f1f5f03547971048bef929b6634cff0/src/main/scala/com/example/weatherdemo/WeatherdemoRoutes.scala#L75
 
-From the logs:
+From STDOUT:
 
 ```
-[scala-execution-context-global-11] INFO  c.e.w.WeatherdemoRoutes - request IO(Request(method=POST, uri=https://api.flowroute.com/v2/messages, headers=Headers(Content-Type: application/json, Content-Length: 95))) 
-[ioapp-compute-0] DEBUG o.h.c.PoolManager - Requesting connection: curAllocated=1 idleQueues.size=1 waitQueue.size=0 maxWaitQueueLimit=256 closed=false 
-[ioapp-compute-0] DEBUG o.h.c.PoolManager - Active connection not found. Creating new one. curAllocated=1 idleQueues.size=1 waitQueue.size=0 maxWaitQueueLimit=256 closed=false
-
-Segmentation Fault
+java.net.SocketException: Protocol family unavailable
+	at com.oracle.svm.jni.JNIJavaCallWrappers.jniInvoke_ARRAY:Ljava_net_SocketException_2_0002e_0003cinit_0003e_00028Ljava_lang_String_2_00029V(JNIJavaCallWrappers.java:0)
+	at com.oracle.svm.jni.functions.JNIFunctions$NewObjectWithObjectArrayArgFunctionPointer.invoke(JNIFunctions.java)
+	at com.oracle.svm.jni.functions.JNIFunctions.ThrowNew(JNIFunctions.java:801)
+	at sun.nio.ch.Net.bind0(Net.java)
+	at sun.nio.ch.Net.bind(Net.java:455)
+	at sun.nio.ch.Net.bind(Net.java:447)
+	at sun.nio.ch.ServerSocketChannelImpl.bind(ServerSocketChannelImpl.java:227)
+	at java.nio.channels.ServerSocketChannel.bind(ServerSocketChannel.java:162)
+	at org.http4s.blaze.channel.nio1.NIO1SocketServerGroup.$anonfun$bind$1(NIO1SocketServerGroup.scala:217)
+	at scala.util.Try$.apply(Try.scala:210)
+	at org.http4s.blaze.channel.nio1.NIO1SocketServerGroup.bind(NIO1SocketServerGroup.scala:216)
+	at org.http4s.blaze.channel.nio1.NIO1SocketServerGroup$$anon$1.bind(NIO1SocketServerGroup.scala:79)
+	at org.http4s.server.blaze.BlazeServerBuilder.$anonfun$resource$5(BlazeServerBuilder.scala:341)
+	at scala.Function1.$anonfun$andThen$1(Function1.scala:85)
+	at scala.Function1.$anonfun$andThen$1(Function1.scala:85)
+	at cats.effect.IO$Map.apply(IO.scala:1504)
+	at cats.effect.IO$Map.apply(IO.scala:1502)
+	at cats.effect.internals.IORunLoop$.cats$effect$internals$IORunLoop$$loop(IORunLoop.scala:142)
+	at cats.effect.internals.IORunLoop$.startCancelable(IORunLoop.scala:41)
+	at cats.effect.internals.IOBracket$BracketStart.run(IOBracket.scala:88)
+	at cats.effect.internals.Trampoline.cats$effect$internals$Trampoline$$immediateLoop(Trampoline.scala:67)
+	at cats.effect.internals.Trampoline.startLoop(Trampoline.scala:35)
+	at cats.effect.internals.TrampolineEC$JVMTrampoline.super$startLoop(TrampolineEC.scala:89)
+	at cats.effect.internals.TrampolineEC$JVMTrampoline.$anonfun$startLoop$1(TrampolineEC.scala:89)
+	at scala.runtime.java8.JFunction0$mcV$sp.apply(JFunction0$mcV$sp.scala:18)
+	at scala.concurrent.BlockContext$.withBlockContext(BlockContext.scala:94)
+	at cats.effect.internals.TrampolineEC$JVMTrampoline.startLoop(TrampolineEC.scala:89)
+	at cats.effect.internals.Trampoline.execute(Trampoline.scala:43)
+	at cats.effect.internals.TrampolineEC.execute(TrampolineEC.scala:42)
+	at cats.effect.internals.IOBracket$BracketStart.apply(IOBracket.scala:69)
+	at cats.effect.internals.IOBracket$BracketStart.apply(IOBracket.scala:49)
+	at cats.effect.internals.IORunLoop$.cats$effect$internals$IORunLoop$$loop(IORunLoop.scala:139)
+	at cats.effect.internals.IORunLoop$.start(IORunLoop.scala:34)
+	at cats.effect.internals.IOBracket$.$anonfun$apply$1(IOBracket.scala:42)
+	at cats.effect.internals.IOBracket$.$anonfun$apply$1$adapted(IOBracket.scala:32)
+	at cats.effect.internals.IORunLoop$RestartCallback.start(IORunLoop.scala:345)
+	at cats.effect.internals.IORunLoop$.cats$effect$internals$IORunLoop$$loop(IORunLoop.scala:122)
+	at cats.effect.internals.IORunLoop$RestartCallback.signal(IORunLoop.scala:359)
+	at cats.effect.internals.IORunLoop$RestartCallback.apply(IORunLoop.scala:380)
+	at cats.effect.internals.IORunLoop$RestartCallback.apply(IORunLoop.scala:323)
+	at cats.effect.internals.IOShift$Tick.run(IOShift.scala:35)
+	at cats.effect.internals.PoolUtils$$anon$2$$anon$3.run(PoolUtils.scala:52)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+	at java.lang.Thread.run(Thread.java:834)
+	at com.oracle.svm.core.thread.JavaThreads.threadStartRoutine(JavaThreads.java:527)
+	at com.oracle.svm.core.posix.thread.PosixJavaThreads.pthreadStartRoutine(PosixJavaThreads.java:193)
 ```
