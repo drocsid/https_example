@@ -333,6 +333,18 @@
 #define __NR_statx				332
 #define __NR_io_pgetevents			333
 #define __NR_rseq				334
+#define __NR_pidfd_send_signal			424
+#define __NR_io_uring_setup			425
+#define __NR_io_uring_enter			426
+#define __NR_io_uring_register			427
+#define __NR_open_tree		428
+#define __NR_move_mount		429
+#define __NR_fsopen		430
+#define __NR_fsconfig		431
+#define __NR_fsmount		432
+#define __NR_fspick		433
+#define __NR_pidfd_open		434
+#define __NR_clone3		435
 
 #define SYS_read				0
 #define SYS_write				1
@@ -669,3 +681,15 @@
 #define SYS_statx				332
 #define SYS_io_pgetevents			333
 #define SYS_rseq				334
+#define SYS_pidfd_send_signal			424
+#define SYS_io_uring_setup			425
+#define SYS_io_uring_enter			426
+#define SYS_io_uring_register			427
+#define SYS_open_tree		428
+#define SYS_move_mount		429
+#define SYS_fsopen		430
+#define SYS_fsconfig		431
+#define SYS_fsmount		432
+#define SYS_fspick		433
+#define SYS_pidfd_open		434
+#define SYS_clone3		435
